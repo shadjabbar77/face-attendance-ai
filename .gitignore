@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+
+known/
+unknown/
+output/
+encodings.pkl
+
+.DS_Store
