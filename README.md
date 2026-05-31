@@ -1,32 +1,38 @@
-## Privacy Note
+# Face Recognition Attendance AI
 
-This project was tested locally using sample images. Face images, test images, output images, and saved face encodings are not included in this repository for copyright, privacy, and biometric data protection reasons.
-
-To run the project, users can add their own consented images into the `known/` and `unknown/` folders locally.
+A Python-based face recognition attendance system that learns known faces, identifies people in new images, draws bounding boxes, and logs recognized names to an attendance CSV file.
 
 ## Features
 
-- Detects faces in uploaded images
-- Learns known faces from a local folder
-- Saves face encodings for reuse
-- Identifies known people in new images
-- Draws bounding boxes and names on output images
-- Supports adjustable tolerance for stricter or looser matching
-- Logs recognized faces to an attendance CSV file
-- Skips unknown faces when saving attendance records
-- Adds timestamp, name, match distance, and image filename to the log
+* Detects faces in uploaded images
+* Learns known faces from a local `known/` folder
+* Saves face encodings for reuse
+* Identifies known people in new images
+* Draws bounding boxes and names on output images
+* Supports adjustable match tolerance
+* Logs recognized faces to `attendance.csv`
+* Prevents duplicate attendance entries
+* Skips unknown faces when saving attendance records
 
 ## Technologies
 
-Python, OpenCV, face_recognition, dlib, NumPy, Pillow
+Python, OpenCV, face_recognition, dlib, NumPy, Pillow, Git, VS Code
 
 ## How to Run
 
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Train the model:
+
 ```bash
 python3 train.py
-python3 recognize.py unknown/unknown_test.jpg 0.55
+```
 
-Run recognition with adjustable tolerance:
+Recognize faces:
 
 ```bash
 python3 recognize.py unknown/unknown_test.jpg 0.55
@@ -38,4 +44,8 @@ View attendance log locally:
 cat attendance.csv
 ```
 
-`attendance.csv` is excluded from GitHub for privacy.
+## Privacy Note
+
+This project was tested locally using sample images. Face images, test images, output images, attendance logs, and saved face encodings are not included in this repository for copyright, privacy, and biometric data protection reasons.
+
+To run the project, users can add their own consented images into the `known/` and `unknown/` folders locally.
