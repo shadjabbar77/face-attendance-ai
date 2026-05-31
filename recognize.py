@@ -64,8 +64,15 @@ for face_encoding, face_location in zip(face_encodings, face_locations):
 
     print(f"{name} | distance: {distance_text}")
 
+if name != "Unknown":
+    file_exists = Path(ATTENDANCE_FILE).exists()
+
     with open(ATTENDANCE_FILE, "a", newline="") as file:
         writer = csv.writer(file)
+
+        if not file_exists:
+            writer.writerow(["timestamp", "name", "distance", "image"])
+
         writer.writerow([datetime.now(), name, distance_text, image_path.name])
 
     top, right, bottom, left = face_location
