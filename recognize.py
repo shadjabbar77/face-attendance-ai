@@ -1,5 +1,7 @@
 import sys
 import pickle
+import csv
+from datetime import datetime
 from pathlib import Path
 
 import cv2
@@ -8,9 +10,10 @@ import face_recognition
 TOLERANCE = 0.55
 ENCODINGS_FILE = "encodings.pkl"
 OUTPUT_DIR = Path("output")
+ATTENDANCE_FILE = "attendance.csv"
 
 if len(sys.argv) < 2:
-    print("Usage: python recognize.py unknown/test.jpg")
+    print("Usage: python3 recognize.py unknown/unknown_test.jpg 0.55")
     sys.exit(1)
 
 image_path = Path(sys.argv[1])
@@ -25,7 +28,7 @@ if not image_path.exists():
     sys.exit(1)
 
 if not Path(ENCODINGS_FILE).exists():
-    print("Missing encodings.pkl. Run: python train.py")
+    print("Missing encodings.pkl. Run: python3 train.py")
     sys.exit(1)
 
 OUTPUT_DIR.mkdir(exist_ok=True)
@@ -47,17 +50,23 @@ print(f"Found {len(face_locations)} face(s).")
 
 for face_encoding, face_location in zip(face_encodings, face_locations):
     name = "Unknown"
+    distance_text = "N/A"
 
     distances = face_recognition.face_distance(known_encodings, face_encoding)
 
     if len(distances) > 0:
         best_match_index = distances.argmin()
         best_distance = distances[best_match_index]
+        distance_text = f"{best_distance:.2f}"
 
         if best_distance <= TOLERANCE:
             name = known_names[best_match_index]
 
-        print(f"{name} | distance: {best_distance:.2f}")
+    print(f"{name} | distance: {distance_text}")
+
+    with open(ATTENDANCE_FILE, "a", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow([datetime.now(), name, distance_text, image_path.name])
 
     top, right, bottom, left = face_location
 
@@ -77,3 +86,4 @@ output_path = OUTPUT_DIR / f"recognized_{image_path.name}"
 cv2.imwrite(str(output_path), bgr_image)
 
 print(f"Saved result to: {output_path}")
+print(f"Attendance saved to: {ATTENDANCE_FILE}")
