@@ -66,14 +66,25 @@ for face_encoding, face_location in zip(face_encodings, face_locations):
 
 if name != "Unknown":
     file_exists = Path(ATTENDANCE_FILE).exists()
+    already_logged = set()
 
-    with open(ATTENDANCE_FILE, "a", newline="") as file:
-        writer = csv.writer(file)
+    if file_exists:
+        with open(ATTENDANCE_FILE, "r") as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                already_logged.add(row["name"])
 
-        if not file_exists:
-            writer.writerow(["timestamp", "name", "distance", "image"])
+    if name not in already_logged:
+        with open(ATTENDANCE_FILE, "a", newline="") as file:
+            writer = csv.writer(file)
 
-        writer.writerow([datetime.now(), name, distance_text, image_path.name])
+            if not file_exists:
+                writer.writerow(["timestamp", "name", "distance", "image"])
+
+            writer.writerow([datetime.now(), name, distance_text, image_path.name])
+            print(f"Attendance logged for: {name}")
+    else:
+        print(f"{name} already logged.")
 
     top, right, bottom, left = face_location
 
